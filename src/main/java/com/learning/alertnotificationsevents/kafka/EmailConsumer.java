@@ -16,6 +16,11 @@ public class EmailConsumer {
            if(!"EMAIL".equals(event.getType())){
                return;
            }
+           // simulating failure to test DLQ
+
+         if(event.getMessage().contains("fail")){
+             throw new RuntimeException("The message consumption failed");
+         }
 
            log.info("Email sent successfully");
 
