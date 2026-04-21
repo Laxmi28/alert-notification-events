@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
-@RequestMapping("/api/v1/notifications")
+@RequestMapping("/api/notifications")
 public class EventsController {
 
     private final NotificationProducer producer;
@@ -20,17 +23,36 @@ public class EventsController {
         this.producer = producer;
     }
 
-    @PostMapping
-    public ResponseEntity<String> sendNotifications(@RequestBody NotificationRequest request){
+    @PostMapping(headers = "X-API-VERSION=1")
+    public ResponseEntity<String> sendNotificationsV1(@RequestBody NotificationRequest request){
 
-        NotificationEvent event = new NotificationEvent(
-                request.getUserId(), request.getMessage(), request.getType(), null
-        );
-
+        NotificationEvent event = NotificationEvent.builder()
+                                 .type(request.getType())
+                                 .message(request.getMessage())
+                                         .userId(request.getUserId()).build();
         producer.send(event);
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
 
+
+    }
+
+    @PostMapping(headers = "X-API-VERSION=2")
+    public ResponseEntity<Map<String,Object>> sendNotificationsV2(@RequestBody NotificationRequest request){
+
+        NotificationEvent event = new NotificationEvent(
+                request.getUserId(),request.getMessage(),request.getType(),request.getPriority()
+        );
+
+        producer.send(event);
+
+        Map<String,Object> response = new HashMap<>();
+        response.put("status","ACCEPTED");
+        response.put("version","V2");
+        response.put("priority",request.getPriority());
+
+
+        return new ResponseEntity<>(response,HttpStatus.OK);
 
     }
 
