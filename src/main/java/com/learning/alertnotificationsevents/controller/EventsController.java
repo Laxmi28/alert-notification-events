@@ -27,8 +27,8 @@ public class EventsController {
     public ResponseEntity<String> sendNotificationsV1(@RequestBody NotificationRequest request){
 
         NotificationEvent event = NotificationEvent.builder()
-                                 .type(request.getType())
-                                 .message(request.getMessage())
+                                         .type(request.getType())
+                                         .message(request.getMessage())
                                          .userId(request.getUserId()).build();
         producer.send(event);
 
@@ -40,9 +40,12 @@ public class EventsController {
     @PostMapping(headers = "X-API-VERSION=2")
     public ResponseEntity<Map<String,Object>> sendNotificationsV2(@RequestBody NotificationRequest request){
 
-        NotificationEvent event = new NotificationEvent(
-                request.getUserId(),request.getMessage(),request.getType(),request.getPriority()
-        );
+        NotificationEvent event = NotificationEvent.builder()
+                                    .type(request.getType())
+                                    .message(request.getMessage())
+                                    .userId(request.getUserId())
+                                    .priority(request.getPriority())
+                                    .build();
 
         producer.send(event);
 
