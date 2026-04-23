@@ -16,5 +16,5 @@ public class NotificationEvent {
     private String message;
     private String type;
     private  String priority;
-    private int counter;
+    private int retryCount;
 }

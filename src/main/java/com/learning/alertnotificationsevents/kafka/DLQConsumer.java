@@ -29,14 +29,14 @@ public class DLQConsumer {
                return;
            }
 
-           if(event.getCounter() >= 3) {
+           if(event.getRetryCount() >= 3) {
                   log.info("Permanent failure of the event processing");
                   return;
            }
 
 
             log.info("Retrying the DLQ message : {} " , event);
-            event.setCounter(event.getCounter()+1);
+            event.setRetryCount(event.getRetryCount()+1);
             producer.send(event);
 
 
