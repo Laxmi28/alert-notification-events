@@ -22,7 +22,7 @@ public class KafkaConfig {
 
 
         // retry after 2 sec for 3 time
-        FixedBackOff backOff = new FixedBackOff(2000L,3);
+        FixedBackOff backOff = new FixedBackOff(2000L,2);
 
         // send the fail messages to DLQ
         DeadLetterPublishingRecoverer recoverer = new DeadLetterPublishingRecoverer(kafkaTemplate,

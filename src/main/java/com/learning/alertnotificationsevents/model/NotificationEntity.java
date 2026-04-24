@@ -23,4 +23,5 @@ public class NotificationEntity {
     private String status;
     private Integer retryCount;
     private LocalDateTime createdAt;
+    private String priority;
 }

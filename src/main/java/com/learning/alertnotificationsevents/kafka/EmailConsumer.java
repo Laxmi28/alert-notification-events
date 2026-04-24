@@ -3,6 +3,7 @@ package com.learning.alertnotificationsevents.kafka;
 import com.learning.alertnotificationsevents.model.NotificationEntity;
 import com.learning.alertnotificationsevents.model.NotificationEvent;
 import com.learning.alertnotificationsevents.repository.NotificationRepository;
+import com.learning.alertnotificationsevents.service.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -17,8 +18,11 @@ public class EmailConsumer {
 
     private final NotificationRepository repository;
 
-    public EmailConsumer(NotificationRepository repository){
+    private final EmailService emailService;
+
+    public EmailConsumer(NotificationRepository repository,EmailService emailService){
         this.repository = repository;
+        this.emailService = emailService;
     }
 
     @KafkaListener(topics = "notification-events",groupId = "email-group")
@@ -28,29 +32,35 @@ public class EmailConsumer {
            }
 
 
-            NotificationEntity entity = new NotificationEntity();
-            entity.setUserId(event.getUserId());
-            entity.setMessage(event.getMessage());
-            entity.setType(event.getType());
-            entity.setRetryCount(event.getRetryCount());
-            entity.setCreatedAt(LocalDateTime.now());
+//            NotificationEntity entity = new NotificationEntity();
+//            entity.setUserId(event.getUserId());
+//            entity.setMessage(event.getMessage());
+//            entity.setType(event.getType());
+//            entity.setRetryCount(event.getRetryCount());
+//            entity.setCreatedAt(LocalDateTime.now());
+//            entity.setPriority(event.getPriority());
+//
+//         try{
+//             if(event.getMessage().contains("fail")){
+//                 throw new RuntimeException("The message consumption failed");
+//             }
+//             log.info("Email sent ");
+//             entity.setStatus("SENT");
+//         }catch(Exception ex){
+//             entity.setStatus("FAILED");
+//             repository.save(entity);
+//
+//             throw  ex;
+//
+//         }
+//
+//           repository.save(entity);
+//           log.info("Email sent successfully");
 
-         try{
-             if(event.getMessage().contains("fail")){
-                 throw new RuntimeException("The message consumption failed");
-             }
-             log.info("Email sent ");
-             entity.setStatus("SENT");
-         }catch(Exception ex){
-             entity.setStatus("FAILED");
-             repository.save(entity);
+        emailService.sendMail(event);
 
-             throw  ex;
 
-         }
 
-           repository.save(entity);
-           log.info("Email sent successfully");
 
     }
 }
