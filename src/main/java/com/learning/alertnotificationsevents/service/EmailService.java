@@ -21,11 +21,14 @@ public class EmailService {
 
     private static final Logger log = LoggerFactory.getLogger(EmailService.class);
 
-    private Map<String, Boolean> map = new ConcurrentHashMap<>();
+    private Map<String, Long> processedCache = new ConcurrentHashMap<>();
 
 
     private final KafkaTemplate<String, NotificationEvent> kafkaTemplate;
     private final NotificationRepository repository;
+    private static long TTL = 5*60*1000;
+
+    long now = System.currentTimeMillis();
 
     public EmailService(KafkaTemplate<String, NotificationEvent> kafkaTemplate, NotificationRepository repository) {
         this.kafkaTemplate = kafkaTemplate;
@@ -36,7 +39,10 @@ public class EmailService {
     @CircuitBreaker(name = "emailService", fallbackMethod = "fallback")
     public void sendMail(NotificationEvent event) {
 
-        if ( map.containsKey(event.getId())){
+        // remove the old invalid data
+        processedCache.entrySet().removeIf( e-> now - e.getValue() > 5);
+
+        if ( processedCache.containsKey(event.getId())){
             log.info("Email already sended");
             return;
         }
@@ -66,7 +72,7 @@ public class EmailService {
             }
 
             repository.save(entity);
-            map.put(event.getId(),true);
+            processedCache.put(event.getId(),   System.currentTimeMillis());
             log.info("Email sent successfully");
         }
 
