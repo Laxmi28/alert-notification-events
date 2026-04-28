@@ -27,9 +27,12 @@ public class EventsController {
     public ResponseEntity<String> sendNotificationsV1(@RequestBody NotificationRequest request){
 
         NotificationEvent event = NotificationEvent.builder()
-                                         .type(request.getType())
-                                         .message(request.getMessage())
-                                         .userId(request.getUserId()).build();
+                                                    .id(request.getId())
+                                                    .type(request.getType())
+                                                    .message(request.getMessage())
+                                                    .userId(request.getUserId())
+                                                    .priority(request.getPriority())
+                                                    .build();
         producer.send(event);
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
@@ -41,11 +44,12 @@ public class EventsController {
     public ResponseEntity<Map<String,Object>> sendNotificationsV2(@RequestBody NotificationRequest request){
 
         NotificationEvent event = NotificationEvent.builder()
-                                    .type(request.getType())
-                                    .message(request.getMessage())
-                                    .userId(request.getUserId())
-                                    .priority(request.getPriority())
-                                    .build();
+                                                    .id(request.getId())
+                                                    .type(request.getType())
+                                                    .message(request.getMessage())
+                                                    .userId(request.getUserId())
+                                                    .priority(request.getPriority())
+                                                    .build();
 
         producer.send(event);
 

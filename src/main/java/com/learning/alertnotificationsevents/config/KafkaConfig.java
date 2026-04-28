@@ -21,8 +21,8 @@ public class KafkaConfig {
     public DefaultErrorHandler errorHandler(KafkaTemplate<Object,Object> kafkaTemplate){
 
 
-        // retry after 2 sec for 3 time
-        FixedBackOff backOff = new FixedBackOff(2000L,2);
+        // retry after 2 sec for 1 time
+        FixedBackOff backOff = new FixedBackOff(2000L,1);
 
         // send the fail messages to DLQ
         DeadLetterPublishingRecoverer recoverer = new DeadLetterPublishingRecoverer(kafkaTemplate,

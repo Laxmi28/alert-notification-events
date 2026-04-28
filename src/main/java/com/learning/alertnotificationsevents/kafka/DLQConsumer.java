@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class DLQConsumer {
@@ -23,19 +22,19 @@ public class DLQConsumer {
             topics = "notification-events.DLQ", groupId = "dlq-processor-group"
     )
     public void consume(NotificationEvent event){
-           log.info("Received the DLQ message : {} " , event);
+           log.info("Received the DLQ message for event id : {} " , event.getId());
 
            if( !event.getMessage().contains("fail")){
                return;
            }
 
            if(event.getRetryCount() >= 3) {
-                  log.info("Permanent failure of the event processing");
+                  log.info("Permanent failure of the event processing for event id : {}", event.getId());
                   return;
            }
 
 
-            log.info("Retrying the DLQ message : {} " , event);
+            log.info("Retrying the DLQ message for event id : {} " , event.getId());
             event.setRetryCount(event.getRetryCount()+1);
             producer.send(event);
 

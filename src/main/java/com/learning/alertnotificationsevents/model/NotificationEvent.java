@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class NotificationEvent {
 
+    private String id;
     private String userId;
     private String message;
     private String type;

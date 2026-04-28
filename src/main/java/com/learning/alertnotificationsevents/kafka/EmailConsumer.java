@@ -30,33 +30,6 @@ public class EmailConsumer {
            if(!"EMAIL".equals(event.getType())){
                return;
            }
-
-
-//            NotificationEntity entity = new NotificationEntity();
-//            entity.setUserId(event.getUserId());
-//            entity.setMessage(event.getMessage());
-//            entity.setType(event.getType());
-//            entity.setRetryCount(event.getRetryCount());
-//            entity.setCreatedAt(LocalDateTime.now());
-//            entity.setPriority(event.getPriority());
-//
-//         try{
-//             if(event.getMessage().contains("fail")){
-//                 throw new RuntimeException("The message consumption failed");
-//             }
-//             log.info("Email sent ");
-//             entity.setStatus("SENT");
-//         }catch(Exception ex){
-//             entity.setStatus("FAILED");
-//             repository.save(entity);
-//
-//             throw  ex;
-//
-//         }
-//
-//           repository.save(entity);
-//           log.info("Email sent successfully");
-
         emailService.sendMail(event);
 
 

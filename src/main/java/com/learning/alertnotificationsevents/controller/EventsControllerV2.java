@@ -27,6 +27,7 @@ public class EventsControllerV2 {
     public ResponseEntity<Map<String,Object>> sendNotifications(@RequestBody NotificationRequest request){
 
         NotificationEvent event = NotificationEvent.builder()
+                                                    .id(request.getId())
                                                     .type(request.getType())
                                                     .message(request.getMessage())
                                                     .userId(request.getUserId())

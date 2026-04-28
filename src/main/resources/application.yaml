@@ -52,3 +52,11 @@ spring:
     logging:
       level:
         io.github.resilience4j.retry: DEBUG
+logging:
+  file:
+    name: logs/app.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger - %msg%n"
+  level:
+    root: INFO
+    com.learning: DEBUG
